@@ -90,7 +90,7 @@ namespace Course_work
                 Matrix rotationMatrix = new Matrix(GetRotationMatrix(currentMatrix.MatrixData[0].Count, i, j, angle));
                 rotationMatrices.Add(rotationMatrix);
                 Matrix transposedMatrix = new Matrix(rotationMatrix.GetTransposedMatrix());
-                currentMatrix = transposedMatrix * currentMatrix * rotationMatrix;
+                currentMatrix = (transposedMatrix.Multiply(currentMatrix, ref Matrix.RefIterations)).Multiply(rotationMatrix, ref Matrix.RefIterations);
                 double sumOfSquares = SumOfSquaresOfNotDiagonalElements(currentMatrix.MatrixData);
                 if (sumOfSquares < epsilon)
                 {
@@ -132,7 +132,7 @@ namespace Course_work
             foreach (Matrix matrix in rotationMatrixes.Skip(1))
             {
                 Matrix.Iterations++;
-                resultMatrix = resultMatrix * matrix;
+                resultMatrix = resultMatrix.Multiply(matrix, ref Matrix.RefIterations);
             }
             Matrix eigenVectors = new Matrix(Matrix.GetEmptyMatrix(Matrix.MatrixData[0].Count));
             eigenVectors.MatrixData = ExtractEigenVectors(resultMatrix.MatrixData, epsilon);

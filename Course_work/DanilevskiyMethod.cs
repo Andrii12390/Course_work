@@ -68,7 +68,7 @@ namespace Course_work
                 Matrix B = new Matrix(GetB(A.MatrixData, i));
                 arrayB.Add(B);
                 Matrix BReverse = new Matrix(FindInverseMatrix(B.MatrixData));
-                A = BReverse * A * B;
+                A = (BReverse.Multiply(A, ref Matrix.RefIterations)).Multiply(B, ref Matrix.RefIterations);
             }
             return (A, arrayB);
         }
@@ -107,12 +107,13 @@ namespace Course_work
             Array.Reverse(coefficients);
             return (eigenValues, arrayB, coefficients);
         }
+
         public List<List<double>> GetEigenVectors(List<double> ownValues, List<Matrix> similarityMatrices)
         {
             Matrix similarityMatrix = similarityMatrices[0];
             for (int i = 1; i < similarityMatrices.Count; i++)
             {
-                similarityMatrix = similarityMatrix * similarityMatrices[i];
+                similarityMatrix = similarityMatrix.Multiply(similarityMatrices[i], ref Matrix.RefIterations);
             }
             Matrix ownVectors = new Matrix(Enumerable.Range(0, Matrix.MatrixData.Count).Select(k => ownValues.Select(val => Math.Pow(val, Matrix.MatrixData.Count - k - 1)).ToList()).ToList());
             List<List<double>> transposedVectors = ownVectors.GetTransposedMatrix();

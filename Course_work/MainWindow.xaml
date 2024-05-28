@@ -259,10 +259,6 @@
                     <ComboBoxItem Content="4"></ComboBoxItem>
                     <ComboBoxItem Content="5"></ComboBoxItem>
                     <ComboBoxItem Content="6"></ComboBoxItem>
-                    <ComboBoxItem Content="7"></ComboBoxItem>
-                    <ComboBoxItem Content="8"></ComboBoxItem>
-                    <ComboBoxItem Content="9"></ComboBoxItem>
-                    <ComboBoxItem Content="10"></ComboBoxItem>
                 </ComboBox>
                 <TextBlock Text="Method" Grid.Row="1" Margin="3"  FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
                 <ComboBox Grid.Row="1" Background="Blue" Style="{StaticResource CustomComboBoxStyle}" FontSize="18" FontWeight="Bold" x:Name="SelectedMethod" Margin="3, 35, 3, 5">

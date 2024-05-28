@@ -1,4 +1,6 @@
-﻿namespace Course_work
+﻿using MathNet.Numerics.LinearAlgebra.Solvers;
+
+namespace Course_work
 {
     internal class Matrix
     {
@@ -9,7 +11,10 @@
         public int Iterations { get => _iterations; set => _iterations = value; }
         public List<List<double>> MatrixData { get => _matrix; set => _matrix = value; }
 
-
+        public ref int RefIterations
+        {
+            get => ref _iterations;  
+        }
         public Matrix(List<List<double>> matrix)
         {
             MatrixData = matrix;
@@ -97,19 +102,18 @@
             return transposedMatrix;
         }
 
-        public static Matrix operator *(Matrix matrixA, Matrix matrixB)
+        public Matrix Multiply(Matrix matrixB, ref int iterations)
         {
-            int size = matrixA.MatrixData.Count;
-            List<List<double>> resultMatrix = GetEmptyMatrix(size);
+            List<List<double>> resultMatrix = GetEmptyMatrix(matrixB.MatrixData.Count);
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < matrixB.MatrixData.Count; i++)
             {
-                for (int j = 0; j < size; j++)
+                for (int j = 0; j < matrixB.MatrixData.Count; j++)
                 {
-                    for (int k = 0; k < size; k++)
+                    for (int k = 0; k < matrixB.MatrixData.Count; k++)
                     {
-                        resultMatrix[i][j] += matrixA.MatrixData[i][k] * matrixB.MatrixData[k][j];
-                        matrixA.Iterations++;
+                        resultMatrix[i][j] += MatrixData[i][k] * matrixB.MatrixData[k][j];
+                        iterations++;
                     }
                 }
             }

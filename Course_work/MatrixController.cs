@@ -120,7 +120,7 @@ namespace Course_work
             {
                 for (int j = 0; j < columnCount; j++)
                 {
-                    double value = (random.NextDouble() * 10000);
+                    double value = (random.NextDouble() * 100);
                     Matrix.MatrixData[i][j] = value;
                     TextBox textBox = matrixGrid.Children.OfType<TextBox>().FirstOrDefault(tb => Grid.GetRow(tb) == i && Grid.GetColumn(tb) == j * 2 + 1);
                     textBox.Text = $"{value:F2}";
