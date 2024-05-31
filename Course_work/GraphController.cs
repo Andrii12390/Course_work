@@ -13,15 +13,15 @@ namespace Course_work
             graph = new Graph(polynomialCoefficients, minX, maxX, roots);
         }
 
-        public PlotModel buildGraph()
+        public PlotModel BuildGraph()
         {
             try
             {
-                return graph.buildGraph();
+                return graph.BuildGraph();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Program cannot build this graph");
+                throw new Exception($"An error occurred while building graph: {ex.Message}");
             }
         }
     }

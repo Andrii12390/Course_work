@@ -16,7 +16,7 @@ namespace Course_work
 
         public RotationMethod(Matrix matrix)
         {
-            Matrix = matrix;
+            Matrix = matrix ?? throw new ArgumentNullException($"{nameof(matrix)} cannot be null");
         }
         private double GetRotationAngle(List<List<double>> matrix, int i, int j)
         {
@@ -75,15 +75,15 @@ namespace Course_work
             {
                 throw new ArgumentException("Matrix should be symmetrical");
             }
-            if (Matrix.IsIdentity())
+            else if (Matrix.IsDiagonal())
             {
-                throw new ArgumentException("Matrix cannot be identity");
+                return (ExtractEigenvalues(Matrix.MatrixData, epsilon), null);
             }
             int iterations = 0;
             bool operationCondition = true;
             List<Matrix> rotationMatrices = new List<Matrix>();
             Matrix currentMatrix = new Matrix(Matrix.MatrixData);
-            while (iterations < 1e3 && operationCondition)
+            while (iterations < 1e4 && operationCondition)
             {
                 (int i, int j) = GetLargestNonDiagonalElement(currentMatrix.MatrixData);
                 double angle = GetRotationAngle(currentMatrix.MatrixData, i, j);
@@ -127,11 +127,14 @@ namespace Course_work
         }
         public List<List<double>> GetEigenVectors(List<Matrix> rotationMatrixes, double epsilon)
         {
+            if(Matrix.IsDiagonal())
+            {
+                return ExtractEigenVectors(Matrix.GetTransposedMatrix(), epsilon);
+            }
             Matrix resultMatrix = rotationMatrixes[0];
 
             foreach (Matrix matrix in rotationMatrixes.Skip(1))
             {
-                Matrix.Iterations++;
                 resultMatrix = resultMatrix.Multiply(matrix, ref Matrix.RefIterations);
             }
             Matrix eigenVectors = new Matrix(Matrix.GetEmptyMatrix(Matrix.MatrixData[0].Count));

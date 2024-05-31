@@ -21,15 +21,15 @@ namespace Course_work
             InitializeComponent();
         }
 
-        private void matrixSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnMatrixSizeComboBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
-            if (comboBox.SelectedItem is ComboBoxItem selectedItem)
+            if (comboBox?.SelectedItem is ComboBoxItem selectedItem)
             {
                 if (int.TryParse(selectedItem.Content.ToString(), out int size))
                 {
                     _matrixController = new MatrixController(size);
-                    _matrixController.generateMatrixTextBoxes(MatrixGrid);
+                    _matrixController.GenerateMatrixTextBoxes(MatrixGrid);
                 }
                 else
                 {
@@ -37,35 +37,33 @@ namespace Course_work
                 }
             }
         }
-        private void exitButton(object sender, RoutedEventArgs e)
+        private void OnExitButtonClick(object sender, RoutedEventArgs e)
         {
             Close();
         }
-        private void calculateButton(object sender, RoutedEventArgs e)
+        private void OnCalculateButtonClick(object sender, RoutedEventArgs e)
         {
             Method method = SelectedMethod.SelectedIndex == 0 ? Method.Danilevskiy : Method.Rotation;
-            if (_matrixController == null || !_matrixController.validateMatrixData(MatrixGrid))
+            if (_matrixController == null || !_matrixController.ValidateMatrixData(MatrixGrid))
             {
-                MessageBox.Show("Please enter valid decimal values in all matrix cells.");
-                return;
+                MessageBox.Show("Please enter valid decimal values in all matrix cells."); return;
             }
-            if (SelectedMethod.SelectedIndex == -1)
+            else if (SelectedMethod.SelectedIndex == -1)
             {
-                MessageBox.Show("You should select the method");
-                return;
+                MessageBox.Show("You should select the method"); return;
             }
             try
             {
                 switch (method)
                 {
                     case Method.Danilevskiy:
-                        _matrixController.CalculateDanilevskiy();
+                        _matrixController?.CalculateDanilevskiy();
                         _graphController = new GraphController(_matrixController.PolynomialCoefficients, _matrixController.EigenValues.Min(),
                                                           _matrixController.EigenValues.Max(), _matrixController.EigenValues.ToArray());
                         break;
                     case Method.Rotation:
                         double tolerance = double.Parse((SelectedTolerance.SelectedItem as ComboBoxItem)?.Content.ToString());
-                        _matrixController.CalculateRotation(tolerance);
+                        _matrixController?.CalculateRotation(tolerance);
                         break;
                     default:
                         break;
@@ -82,31 +80,32 @@ namespace Course_work
             {
                 MessageBox.Show(ex.Message);
             }
+            _fileController.EigenPairs = _eigenPairs;
+            _fileController.Matrix = _matrixController.Matrix.MatrixData;
         }
 
-        private void buttonClear(object sender, RoutedEventArgs e)
+        private void OnClearButtonClick(object sender, RoutedEventArgs e)
         {
             _matrixController.Matrix = new Matrix(_matrixController.Matrix.MatrixData.Count);
-            _matrixController?.clearMatrixData(MatrixGrid);
+            _matrixController?.ClearMatrixData(MatrixGrid);
             plotView.Visibility = Visibility.Collapsed;
             EigenDataGrid.ItemsSource = null;
         }
 
-        private void buttonSave(object sender, RoutedEventArgs e)
+        private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
             string selectedFilePath = SelectedFile.Text;
-            _fileController.saveToFile(selectedFilePath, _eigenPairs, _matrixController.Matrix.MatrixData);
+            _fileController.SaveToFile(selectedFilePath);
         }
-        private void GenerateMatrixButton(object sender, RoutedEventArgs e)
+        private void OnGenerateMatrixButtonClick(object sender, RoutedEventArgs e)
         {
-            _matrixController.generateRandomMatrix(MatrixGrid);
+            _matrixController.GenerateRandomMatrix(MatrixGrid);
         }
-        private void ButtonShowComplexity(object sender, RoutedEventArgs e)
+        private void OnShowComplexityButtonClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"Number of iterations: {_matrixController.Iterations}\n" +
-                            $"Calculation time: {_matrixController.CalculationTime} ms");
+            MessageBox.Show($"Number of iterations: {_matrixController.Iterations}");
         }
-        private void buttonSelectFile(object sender, RoutedEventArgs e)
+        private void OnSelectFileButtonClick(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog { Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*" };
             if (saveFileDialog.ShowDialog() == true)
@@ -115,12 +114,12 @@ namespace Course_work
             }
         }
 
-        private void buildGraphButton(object sender, RoutedEventArgs e)
+        private void OnBuildGraphButtonClick(object sender, RoutedEventArgs e)
         {
             try
             {
                 plotView.Visibility = Visibility.Visible;
-                plotView.Model = _graphController?.buildGraph();
+                plotView.Model = _graphController?.BuildGraph();
 
             }
             catch (Exception ex)

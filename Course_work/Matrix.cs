@@ -72,7 +72,7 @@ namespace Course_work
             }
             return true;
         }
-        public bool IsIdentity()
+        public bool IsDiagonal()
         {
             int num = 0;
             for (int i = 0; i < MatrixData[0].Count; i++)

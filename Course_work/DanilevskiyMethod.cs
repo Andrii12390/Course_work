@@ -13,7 +13,7 @@ namespace Course_work
 
         public DanilevskiyMethod(Matrix matrix)
         {
-            Matrix = matrix;
+            Matrix = matrix ?? throw new ArgumentNullException($"{nameof(matrix)} cannot be null");
         }
         private List<List<double>> FindInverseMatrix(List<List<double>> matrixToInvert)
         {
@@ -35,45 +35,55 @@ namespace Course_work
         private List<List<double>> GetB(List<List<double>> matrixA, int row)
         {
             List<List<double>> B = Matrix.GetUnitMatrix();
-            for (int x = 0; x < matrixA.Count; x++)
+            int size = matrixA.Count;
+
+            for (int col = 0; col < size; col++)
             {
-                if (row - 1 != x)
-                    B[row - 1][x] = -matrixA[row][x] / matrixA[row][row - 1];
-                else
-                    B[row - 1][row - 1] = 1 / matrixA[row][row - 1];
-                Matrix.Iterations++;
+                B[row - 1][col] = (row - 1 == col) ? 1.0 / matrixA[row][row - 1] : -matrixA[row][col] / matrixA[row][row - 1];
             }
+
             return B;
         }
         public (Matrix, List<Matrix>) GetNormalForm()
         {
-            Matrix A = new Matrix(Matrix.MatrixData);
-            List<Matrix> arrayB = new List<Matrix>();
-            for (int i = A.MatrixData.Count - 1; i > 0; i--)
+            var A = new Matrix(Matrix.MatrixData);
+            var arrayB = new List<Matrix>();
+            int size = A.MatrixData.Count;
+
+            for (int i = size - 1; i > 0; i--)
             {
-                Matrix.Iterations++;
                 if (A.MatrixData[i][i - 1] == 0)
                 {
-                    for (int j = 0; j < A.MatrixData.Count; j++)
-                    {
-                        double temp = A.MatrixData[j][i];
-                        A.MatrixData[j][i] = A.MatrixData[j][i - 1];
-                        A.MatrixData[j][i - 1] = temp;
-                    }
-                    List<double> tempRow = new List<double>(A.MatrixData[i]);
-                    A.MatrixData[i] = new List<double>(A.MatrixData[i - 1]);
-                    A.MatrixData[i - 1] = tempRow;
+                    SwapColumnsAndRows(A, i, i - 1);
                 }
-
-                Matrix B = new Matrix(GetB(A.MatrixData, i));
+                var B = new Matrix(GetB(A.MatrixData, i));
                 arrayB.Add(B);
-                Matrix BReverse = new Matrix(FindInverseMatrix(B.MatrixData));
-                A = (BReverse.Multiply(A, ref Matrix.RefIterations)).Multiply(B, ref Matrix.RefIterations);
+                var BInverse = new Matrix(FindInverseMatrix(B.MatrixData));
+                A = BInverse.Multiply(A, ref Matrix.RefIterations).Multiply(B, ref Matrix.RefIterations);
             }
             return (A, arrayB);
         }
+
+        private void SwapColumnsAndRows(Matrix matrix, int col1, int col2)
+        {
+            int size = matrix.MatrixData.Count;
+            for (int j = 0; j < size; j++)
+            {
+                double temp = matrix.MatrixData[j][col1];
+                matrix.MatrixData[j][col1] = matrix.MatrixData[j][col2];
+                matrix.MatrixData[j][col2] = temp;
+            }
+
+            List<double> tempRow = matrix.MatrixData[col1];
+            matrix.MatrixData[col1] = matrix.MatrixData[col2];
+            matrix.MatrixData[col2] = tempRow;
+        }
         public (List<double>, List<Matrix>, double[]) GetEigenValues()
         {
+            if (Matrix.IsDiagonal())
+            {
+                return (Matrix.MatrixData.Select((row, index) => row[index]).ToList(), null, null);
+            }
             var (coefficientsMatrix, arrayB) = GetNormalForm();
             List<double> polynomialCoefficients = coefficientsMatrix.MatrixData[0];
             double[] coefficients = new double[polynomialCoefficients.Count + 1];
@@ -92,12 +102,11 @@ namespace Course_work
                 Matrix.Iterations++;
                 if (root.Imaginary == 0)
                 {
-                    double realPart = root.Real;
-                    if (realPart == 0 || Math.Abs(realPart) > 1e10)
+                    if (root.Real == 0 || Math.Abs(root.Real) > 1e10)
                     {
-                        throw new OverflowException("an overflow occurred when calculating roots.");
+                        throw new OverflowException("An overflow occurred when calculating roots.");
                     }
-                    eigenValues.Add(realPart);
+                    eigenValues.Add(root.Real);
                 }
             }
             if (eigenValues.Count == 0)
@@ -110,6 +119,10 @@ namespace Course_work
 
         public List<List<double>> GetEigenVectors(List<double> ownValues, List<Matrix> similarityMatrices)
         {
+            if (Matrix.IsDiagonal())
+            {
+                return (Matrix.GetTransposedMatrix());
+            }
             Matrix similarityMatrix = similarityMatrices[0];
             for (int i = 1; i < similarityMatrices.Count; i++)
             {

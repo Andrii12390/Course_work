@@ -11,7 +11,6 @@ namespace Course_work
         private List<double> _eigenValues;
         private List<List<double>> _eigenVectors;
         private double[] _polynomialCoefficients;
-        private long _calculationTime;
 
 
         public Matrix Matrix { get => _matrix; set => _matrix = value; }
@@ -19,7 +18,6 @@ namespace Course_work
         public List<double> EigenValues { get => _eigenValues; set => _eigenValues = value; }
         public List<List<double>> EigenVectors { get => _eigenVectors; set => _eigenVectors = value; }
         public double[] PolynomialCoefficients { get => _polynomialCoefficients; set => _polynomialCoefficients = value; }
-        public long CalculationTime { get => _calculationTime; set => _calculationTime = value; }
 
 
         public MatrixController(int size)
@@ -27,7 +25,7 @@ namespace Course_work
             Matrix = new Matrix(size);
         }
         public void ResetIterations() => Matrix.Iterations = 0;
-        public void generateMatrixTextBoxes(Grid matrixGrid)
+        public void GenerateMatrixTextBoxes(Grid matrixGrid)
         {
             matrixGrid.Children.Clear();
             matrixGrid.RowDefinitions.Clear();
@@ -45,37 +43,47 @@ namespace Course_work
 
                 for (int j = 0; j < Matrix.MatrixData[0].Count; j++)
                 {
-                    Label label = new Label();
-                    label.Content = $"A{i + 1}{j + 1}";
-                    label.HorizontalAlignment = HorizontalAlignment.Center;
-                    label.VerticalAlignment = VerticalAlignment.Center;
-                    label.FontWeight = FontWeights.Bold;
-                    Grid.SetRow(label, i);
-                    Grid.SetColumn(label, j * 2);
-                    matrixGrid.Children.Add(label);
-
-                    TextBox textBox = new TextBox();
-                    textBox.Text = "0";
-                    textBox.TextAlignment = TextAlignment.Center;
-                    textBox.MaxLength = 14;
-                    textBox.Width = 50;
-                    textBox.Height = 23;
-                    textBox.HorizontalAlignment = HorizontalAlignment.Center;
-                    textBox.VerticalAlignment = VerticalAlignment.Center;
-                    textBox.Margin = new Thickness(5);
-
-                    Grid.SetRow(textBox, i);
-                    Grid.SetColumn(textBox, j * 2 + 1);
-                    matrixGrid.Children.Add(textBox);
-
-                    trackTextBoxChanges(textBox, i, j);
+                    AddMatrixLabel(matrixGrid, i, j);
+                    AddMatrixTextBox(matrixGrid, i, j);
                 }
             }
         }
+
+        private void AddMatrixLabel(Grid grid, int row, int column)
+        {
+            Label label = new Label
+            {
+                Content = $"A{row + 1}{column + 1}",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                FontWeight = FontWeights.Bold
+            };
+            Grid.SetRow(label, row);
+            Grid.SetColumn(label, column * 2);
+            grid.Children.Add(label);
+        }
+
+        private void AddMatrixTextBox(Grid grid, int row, int column)
+        {
+            TextBox textBox = new TextBox
+            {
+                Text = "0",
+                TextAlignment = TextAlignment.Center,
+                MaxLength = 14,
+                Width = 50,
+                Height = 23,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(5)
+            };
+            Grid.SetRow(textBox, row);
+            Grid.SetColumn(textBox, column * 2 + 1);
+            grid.Children.Add(textBox);
+
+            TrackTextBoxChanges(textBox, row, column);
+        }
         public void CalculateDanilevskiy()
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             try
             {
                 ResetIterations();
@@ -89,13 +97,9 @@ namespace Course_work
             {
                 throw new Exception($"Error in Danilevskiy method calculation: {ex.Message}");
             }
-            stopwatch.Stop();
-            CalculationTime = stopwatch.ElapsedMilliseconds;
         }
         public void CalculateRotation(double tolerance)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             try
             {
                 ResetIterations();
@@ -108,10 +112,8 @@ namespace Course_work
             {
                 throw new Exception($"Error in Rotation method calculation: {ex.Message}");
             }
-            stopwatch.Stop();
-            CalculationTime = stopwatch.ElapsedMilliseconds;
         }
-        public void generateRandomMatrix(Grid matrixGrid)
+        public void GenerateRandomMatrix(Grid matrixGrid)
         {
             Random random = new Random();
             int rowCount = Matrix.MatrixData.Count;
@@ -127,7 +129,7 @@ namespace Course_work
                 }
             }
         }
-        public bool validateMatrixData(Grid matrixGrid)
+        public bool ValidateMatrixData(Grid matrixGrid)
         {
             foreach (UIElement element in matrixGrid.Children)
             {
@@ -176,7 +178,7 @@ namespace Course_work
                 return false;
             }
         }
-        private void trackTextBoxChanges(TextBox textBox, int rowIndex, int columnIndex)
+        private void TrackTextBoxChanges(TextBox textBox, int rowIndex, int columnIndex)
         {
             textBox.LostFocus += (sender, e) =>
             {
@@ -192,11 +194,11 @@ namespace Course_work
                 }
             };
         }
-        public Matrix getMatrix()
+        public Matrix GetMatrix()
         {
             return Matrix;
         }
-        public void clearMatrixData(Grid matrixGrid)
+        public void ClearMatrixData(Grid matrixGrid)
         {
             foreach (UIElement element in matrixGrid.Children)
             {

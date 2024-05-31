@@ -1,15 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Course_work
 {
     internal class EigenPair
     {
-        public double EigenValue { get; set; }
-        public double[] EigenVector { get; set; }
-        public string EigenVectorString => string.Join(", ", EigenVector);
+        private double _eigenValue;
+        private double[] _eigenVector;
+        private string _eigenVectorString;
+
+        public double EigenValue { get => _eigenValue; set => _eigenValue = value; }
+        public string EigenVectorString { get => _eigenVectorString; }
+        public double[] EigenVector {
+            get => _eigenVector;
+            set
+            {
+                _eigenVector = value;
+                _eigenVectorString = string.Join(", ", _eigenVector);
+            }
+        }
+
     }
 }

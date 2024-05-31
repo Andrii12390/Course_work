@@ -7,11 +7,11 @@ namespace Course_work
 {
     internal class Graph
     {
-        private double _minX;
-        private double _maxX;
-        private double[] _roots;
+        private readonly double _minX;
+        private readonly double _maxX;
+        private readonly double[] _roots;
+        private readonly double[] _polynomialCoefficients;
         private PlotModel _plotModel;
-        private double[] _polynomialCoefficients;
         public Graph(double[] coefficients, double leftBoundary, double rightBoundary, double[] roots)
         {
             _minX = leftBoundary - 5;
@@ -20,8 +20,9 @@ namespace Course_work
             this._roots = roots;
         }
 
-        public PlotModel buildGraph()
+        public PlotModel BuildGraph()
         {
+            if(_polynomialCoefficients is null) throw new ArgumentNullException($"Characteristic cannot be null");
             InitializePlotModel();
             AddPolynomialSeries();
             AddIntersectionPoints();

@@ -153,13 +153,11 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" BorderBrush="Blue" BorderThickness="1" CornerRadius="10" Margin="5">
             <Grid Grid.Column="0"  Margin="5">
-                <!-- Додайте Padding -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"></RowDefinition>
                     <RowDefinition Height="1.1*"></RowDefinition>
                     <RowDefinition Height="0.4*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <!-- Додайте ваші елементи у Grid -->
                 <Grid Grid.Row="0" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid x:Name="MatrixGrid" Margin="5">
 
@@ -182,10 +180,10 @@
                             <RowDefinition></RowDefinition>
 
                         </Grid.RowDefinitions>
-                        <Button Grid.Row="4" Margin="5, 5, 5, 5" Style="{StaticResource CustomButtonStyle}" Content="Clear" Click="buttonClear" FontSize="18" FontWeight="Bold"></Button>
-                        <Button Grid.Row="3" Margin="5, 5, 5, 5" Content="Generate" FontSize="18" FontWeight="Bold"  Style="{StaticResource CustomButtonStyle}" Click="GenerateMatrixButton"></Button>
+                        <Button Grid.Row="4" Margin="5, 5, 5, 5" Style="{StaticResource CustomButtonStyle}" Content="Clear" Click="OnClearButtonClick" FontSize="18" FontWeight="Bold"></Button>
+                        <Button Grid.Row="3" Margin="5, 5, 5, 5" Content="Generate" FontSize="18" FontWeight="Bold"  Style="{StaticResource CustomButtonStyle}" Click="OnGenerateMatrixButtonClick"></Button>
 
-                        <Button Grid.Row="0" Margin="5, 5, 5, 5" Content="Build graph" FontSize="18" FontWeight="Bold" Click="buildGraphButton">
+                        <Button Grid.Row="0" Margin="5, 5, 5, 5" Content="Build graph" FontSize="18" FontWeight="Bold" Click="OnBuildGraphButtonClick">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource CustomButtonStyle}">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -200,7 +198,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <Button Grid.Row="1" Margin="5, 5, 5, 5" Content="Complexity" FontSize="18" FontWeight="Bold" Click="ButtonShowComplexity" x:Name="ButtonComplexity">
+                        <Button Grid.Row="1" Margin="5, 5, 5, 5" Content="Complexity" FontSize="18" FontWeight="Bold" Click="OnShowComplexityButtonClick" x:Name="ButtonComplexity">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource CustomButtonStyle}">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -212,7 +210,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <Button Grid.Row="2" Margin="5, 5, 5, 5" Content="Save" Click="buttonSave" x:Name="ButtonSaveIntoFile" FontSize="18" FontWeight="Bold">
+                        <Button Grid.Row="2" Margin="5, 5, 5, 5" Content="Save" Click="OnSaveButtonClick" x:Name="SaveButtonClick" FontSize="18" FontWeight="Bold">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource CustomButtonStyle}">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -253,7 +251,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Matrix size" Grid.Row="0" Margin="3"  FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
-                <ComboBox Grid.Row="0" Background="Blue" SelectedIndex="0" Style="{StaticResource CustomComboBoxStyle}" FontSize="20" SelectionChanged="matrixSizeComboBox_SelectionChanged" HorizontalContentAlignment="Center" Margin="3, 35, 3, 5">
+                <ComboBox Grid.Row="0" Background="Blue" SelectedIndex="0" Style="{StaticResource CustomComboBoxStyle}" FontSize="20" SelectionChanged="OnMatrixSizeComboBoxSelectionChanged" HorizontalContentAlignment="Center" Margin="3, 35, 3, 5">
                     <ComboBoxItem Content="2"></ComboBoxItem>
                     <ComboBoxItem Content="3"></ComboBoxItem>
                     <ComboBoxItem Content="4"></ComboBoxItem>
@@ -265,9 +263,9 @@
                     <ComboBoxItem Content="Danilevskiy"></ComboBoxItem>
                     <ComboBoxItem Content="Rotation"></ComboBoxItem>
                 </ComboBox>
-                <Button Grid.Row="2" Margin="3, 5, 3, 5" Content="Calculate" FontSize="18" FontWeight="Bold"  Style="{StaticResource CustomButtonStyle}" Click="calculateButton"></Button>
+                <Button Grid.Row="2" Margin="3, 5, 3, 5" Content="Calculate" FontSize="18" FontWeight="Bold"  Style="{StaticResource CustomButtonStyle}" Click="OnCalculateButtonClick"></Button>
                 <TextBlock x:Name="SelectedFile" Grid.Row="3" Margin="5" Text="__________" FontSize="8" HorizontalAlignment="Center"></TextBlock>
-                <Button Grid.Row="3" Margin="3, 35, 3, 5" Content="Select File" FontSize="18" FontWeight="Bold" Click="buttonSelectFile" Style="{StaticResource CustomButtonStyle}"></Button>
+                <Button Grid.Row="3" Margin="3, 35, 3, 5" Content="Select File" FontSize="18" FontWeight="Bold" Click="OnSelectFileButtonClick" Style="{StaticResource CustomButtonStyle}"></Button>
                 <TextBlock Text="Tolerance" Grid.Row="4" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="3">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -300,7 +298,7 @@
                         </Style>
                     </ComboBox.Style>
                 </ComboBox>
-                <Button Grid.Row="7" Margin="3, 5, 3, 5" Content="Exit" FontSize="18" FontWeight="Bold"  Style="{StaticResource CustomButtonStyle}" Background="Red" Click="exitButton"></Button>
+                <Button Grid.Row="7" Margin="3, 5, 3, 5" Content="Exit" FontSize="18" FontWeight="Bold"  Style="{StaticResource CustomButtonStyle}" Background="Red" Click="OnExitButtonClick"></Button>
             </Grid>
         </Border>
 
