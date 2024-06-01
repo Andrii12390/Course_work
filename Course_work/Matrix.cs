@@ -1,6 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Solvers;
-
-namespace Course_work
+﻿namespace Course_work
 {
     internal class Matrix
     {

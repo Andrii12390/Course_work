@@ -1,7 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Diagnostics;
+public enum Method
+{
+    Danilevskiy,
+    Rotation
+}
 namespace Course_work
 {
     internal class MatrixController
@@ -30,17 +34,14 @@ namespace Course_work
             matrixGrid.Children.Clear();
             matrixGrid.RowDefinitions.Clear();
             matrixGrid.ColumnDefinitions.Clear();
-
             for (int i = 0; i < Matrix.MatrixData[0].Count; i++)
             {
                 matrixGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
                 matrixGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
-
             for (int i = 0; i < Matrix.MatrixData[0].Count; i++)
             {
                 matrixGrid.RowDefinitions.Add(new RowDefinition());
-
                 for (int j = 0; j < Matrix.MatrixData[0].Count; j++)
                 {
                     AddMatrixLabel(matrixGrid, i, j);
@@ -79,7 +80,6 @@ namespace Course_work
             Grid.SetRow(textBox, row);
             Grid.SetColumn(textBox, column * 2 + 1);
             grid.Children.Add(textBox);
-
             TrackTextBoxChanges(textBox, row, column);
         }
         public void CalculateDanilevskiy()
@@ -113,22 +113,62 @@ namespace Course_work
                 throw new Exception($"Error in Rotation method calculation: {ex.Message}");
             }
         }
-        public void GenerateRandomMatrix(Grid matrixGrid)
+        public void GenerateRandomMatrix(Grid matrixGrid, Method method)
+        {
+            try
+            {
+                if (method == Method.Danilevskiy) { GenerateRandomMatrix(matrixGrid); }
+                else { GenerateSymmetricMatrix(matrixGrid); }
+            }
+            catch (Exception)
+            {
+                throw new Exception("An error occured while generating matrix");
+            }
+
+        }
+
+        private void GenerateRandomMatrix(Grid matrixGrid)
         {
             Random random = new Random();
-            int rowCount = Matrix.MatrixData.Count;
-            int columnCount = Matrix.MatrixData[0].Count;
-            for (int i = 0; i < rowCount; i++)
+            for (int i = 0; i < Matrix.MatrixData.Count; i++)
             {
-                for (int j = 0; j < columnCount; j++)
+                for (int j = 0; j < Matrix.MatrixData[0].Count; j++)
                 {
-                    double value = (random.NextDouble() * 100);
+                    double value = random.NextDouble() * 100;
                     Matrix.MatrixData[i][j] = value;
-                    TextBox textBox = matrixGrid.Children.OfType<TextBox>().FirstOrDefault(tb => Grid.GetRow(tb) == i && Grid.GetColumn(tb) == j * 2 + 1);
-                    textBox.Text = $"{value:F2}";
+                    TextBox textBox = GetTextBoxAtGridPosition(i, j, matrixGrid);
+                    if (textBox != null) textBox.Text = $"{value:F2}";
                 }
             }
         }
+
+        private void GenerateSymmetricMatrix(Grid matrixGrid)
+        {
+            Random random = new Random();
+            for (int i = 0; i < Matrix.MatrixData.Count; i++)
+            {
+                for (int j = i; j < Matrix.MatrixData.Count; j++)
+                {
+                    double value = random.NextDouble() * 100;
+                    Matrix.MatrixData[i][j] = value;
+                    Matrix.MatrixData[j][i] = value;
+                    TextBox textBox1 = GetTextBoxAtGridPosition(i, j, matrixGrid);
+                    if (textBox1 != null) textBox1.Text = $"{value:F2}";
+                    if (i != j) 
+                    {
+                        TextBox textBox2 = GetTextBoxAtGridPosition(j, i, matrixGrid);
+                        if (textBox2 != null) textBox2.Text = $"{value:F2}";
+                    }
+                }
+            }
+        }
+
+        private TextBox GetTextBoxAtGridPosition(int row, int column, Grid matrixGrid)
+        {
+            return matrixGrid.Children.OfType<TextBox>().FirstOrDefault(tb => Grid.GetRow(tb) == row && Grid.GetColumn(tb) == GetTextBoxColumn(column));
+        }
+
+        private int GetTextBoxColumn(int column) => column * 2 + 1; 
         public bool ValidateMatrixData(Grid matrixGrid)
         {
             foreach (UIElement element in matrixGrid.Children)
@@ -145,10 +185,8 @@ namespace Course_work
             }
             return true;
         }
-        private bool IsValidDouble(string input)
+        private bool IsValidDouble(string input, double min = -10000.0, double max = -10000.0, int decimalPart = 5)
         {
-            double min = -10000, max = 10000;
-            int decimalPart = 5;
             if (double.TryParse(input, out double value))
             {
                 if (double.IsInfinity(value))
@@ -194,10 +232,7 @@ namespace Course_work
                 }
             };
         }
-        public Matrix GetMatrix()
-        {
-            return Matrix;
-        }
+        public Matrix GetMatrix() => Matrix;
         public void ClearMatrixData(Grid matrixGrid)
         {
             foreach (UIElement element in matrixGrid.Children)

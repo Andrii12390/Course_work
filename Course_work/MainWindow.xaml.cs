@@ -1,13 +1,8 @@
-﻿using Course_work;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 
-public enum Method
-{
-    Danilevskiy,
-    Rotation
-}
+
 namespace Course_work
 {
     public partial class MainWindow : Window
@@ -43,7 +38,7 @@ namespace Course_work
         }
         private void OnCalculateButtonClick(object sender, RoutedEventArgs e)
         {
-            Method method = SelectedMethod.SelectedIndex == 0 ? Method.Danilevskiy : Method.Rotation;
+            Method method = SelectedMethod.SelectedIndex == 0 ? Method.Rotation : Method.Danilevskiy;
             if (_matrixController == null || !_matrixController.ValidateMatrixData(MatrixGrid))
             {
                 MessageBox.Show("Please enter valid decimal values in all matrix cells."); return;
@@ -99,7 +94,14 @@ namespace Course_work
         }
         private void OnGenerateMatrixButtonClick(object sender, RoutedEventArgs e)
         {
-            _matrixController.GenerateRandomMatrix(MatrixGrid);
+            try
+            {
+                _matrixController.GenerateRandomMatrix(MatrixGrid, SelectedMethod.SelectedIndex == 0 ? Method.Rotation : Method.Danilevskiy);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void OnShowComplexityButtonClick(object sender, RoutedEventArgs e)
         {
@@ -113,7 +115,6 @@ namespace Course_work
                 SelectedFile.Text = saveFileDialog.FileName;
             }
         }
-
         private void OnBuildGraphButtonClick(object sender, RoutedEventArgs e)
         {
             try

@@ -1,23 +1,21 @@
 ﻿using OxyPlot;
-using System.Windows;
-
 namespace Course_work
 {
 
     internal class GraphController
     {
-        private Graph graph;
+        private Graph _graph;
 
         public GraphController(double[] polynomialCoefficients, double minX, double maxX, double[] roots)
         {
-            graph = new Graph(polynomialCoefficients, minX, maxX, roots);
+            _graph = new Graph(polynomialCoefficients, minX, maxX, roots);
         }
 
         public PlotModel BuildGraph()
         {
             try
             {
-                return graph.BuildGraph();
+                return _graph.BuildGraph();
             }
             catch (Exception ex)
             {
@@ -25,5 +23,4 @@ namespace Course_work
             }
         }
     }
-
 }
