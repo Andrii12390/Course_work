@@ -231,8 +231,8 @@
                     <Grid Grid.Row="3" Margin="5">
                         <DataGrid x:Name="EigenDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Eigenvalue" Binding="{Binding EigenValue}" />
-                                <DataGridTextColumn Header="Eigenvector" Binding="{Binding EigenVectorString}" />
+                                <DataGridTextColumn Header="Eigenvalue" Binding="{Binding EigenValue, Mode=OneWay}" />
+                                <DataGridTextColumn Header="Eigenvector" Binding="{Binding EigenVectorString, Mode=OneWay}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
