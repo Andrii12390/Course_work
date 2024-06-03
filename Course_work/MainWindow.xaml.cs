@@ -59,6 +59,7 @@ namespace Course_work
                         _matrixController?.CalculateRotation(double.Parse((SelectedTolerance.SelectedItem as ComboBoxItem)?.Content.ToString()));
                         break;
                     default:
+                        MessageBox.Show("An enxpected error occured while calculating");
                         break;
                 }
                 _eigenPairs = _matrixController.EigenValues.Select((value, index) => new EigenPair

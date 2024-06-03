@@ -98,7 +98,7 @@
         private List<double> ExtractEigenvalues(List<List<double>> matrix, double epsilon)
         {
             List<double> eigenvalues = new List<double>();
-            int decimalPlaces = (epsilon < 1) ? (int)Math.Ceiling(-Math.Log10(epsilon)) : 2;
+            int decimalPlaces = (int)Math.Ceiling(-Math.Log10(epsilon));
             for (int i = 0; i < matrix.Count; i++)
             {
                 Matrix.Iterations++;
@@ -108,7 +108,7 @@
         }
         private List<List<double>> ExtractEigenVectors(List<List<double>> matrix, double epsilon)
         {
-            int decimalPlaces = (epsilon < 1) ? (int)Math.Ceiling(-Math.Log10(epsilon)) : 2;
+            int decimalPlaces =  (int)Math.Ceiling(-Math.Log10(epsilon));
             for (int i = 0; i < matrix.Count; i++)
             {
                 for (int j = 0; j < matrix.Count; j++)
