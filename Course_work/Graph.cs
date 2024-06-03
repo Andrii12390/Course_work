@@ -12,12 +12,12 @@ namespace Course_work
         private readonly double[] _roots;
         private readonly double[] _polynomialCoefficients;
         private PlotModel _plotModel;
-        public Graph(double[] coefficients, double leftBoundary, double rightBoundary, double[] roots)
+        public Graph(double[] coefficients, double leftBoundary, double rightBoundary, double[] roots, double buffer = 5.0D)
         {
-            _minX = leftBoundary - 5;
-            _maxX = rightBoundary + 5;
+            _minX = leftBoundary - buffer;
+            _maxX = rightBoundary + buffer;
             _polynomialCoefficients = coefficients;
-            this._roots = roots;
+            _roots = roots;
         }
 
         public PlotModel BuildGraph()
@@ -81,7 +81,6 @@ namespace Course_work
         {
             foreach (var root in _roots)
             {
-                double y = GetPolynomialValue(root);
                 double epsilon = Math.Pow(10, -_polynomialCoefficients.Length);
                 double yLeft = GetPolynomialValue(root - epsilon);
                 double yRight = GetPolynomialValue(root + epsilon);
@@ -98,7 +97,7 @@ namespace Course_work
                     StrokeThickness = 1
                 };
                 intersectionLine.Points.Add(new DataPoint(root - epsilon, yLeft));
-                intersectionLine.Points.Add(new DataPoint(root, 0));
+                intersectionLine.Points.Add(new DataPoint(root, 0.0D));
                 intersectionLine.Points.Add(new DataPoint(root + epsilon, yRight));
                 _plotModel.Series.Add(intersectionPoint);
                 _plotModel.Series.Add(intersectionLine);
@@ -142,7 +141,7 @@ namespace Course_work
         }
         private void AddAnnotations()
         {
-            var verticalLine = new LineAnnotation
+            LineAnnotation verticalLine = new LineAnnotation
             {
                 Color = OxyColors.Black,
                 Type = LineAnnotationType.Vertical,
@@ -152,7 +151,7 @@ namespace Course_work
                 LineStyle = LineStyle.Solid
             };
 
-            var horizontalLine = new LineAnnotation
+            LineAnnotation horizontalLine = new LineAnnotation
             {
                 Color = OxyColors.Black,
                 Type = LineAnnotationType.Horizontal,

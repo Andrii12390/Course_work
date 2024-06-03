@@ -63,7 +63,7 @@
             }
             return sum;
         }
-        public (List<double>, List<Matrix>) GetEigenvalues(double epsilon)
+        public (List<double>, List<Matrix>?) GetEigenvalues(double epsilon)
         {
             if (!Matrix.IsSymmetrical())
             {
@@ -123,7 +123,13 @@
         {
             if(Matrix.IsDiagonal())
             {
-                return ExtractEigenVectors(Matrix.GetTransposedMatrix(), epsilon);
+                var Vectors = ExtractEigenVectors(Matrix.GetTransposedMatrix(), epsilon);
+                for (int i = 0;i < Vectors.Count;i++)
+                {
+                    if (Vectors[i][i] == 0)
+                        Vectors[i][i] = 1;
+                }
+                return Vectors;
             }
             Matrix resultMatrix = rotationMatrixes[0];
 

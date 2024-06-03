@@ -49,7 +49,6 @@ namespace Course_work
                 }
             }
         }
-
         private void AddMatrixLabel(Grid grid, int row, int column)
         {
             Label label = new Label
@@ -63,7 +62,6 @@ namespace Course_work
             Grid.SetColumn(label, column * 2);
             grid.Children.Add(label);
         }
-
         private void AddMatrixTextBox(Grid grid, int row, int column)
         {
             TextBox textBox = new TextBox
@@ -122,11 +120,9 @@ namespace Course_work
             }
             catch (Exception)
             {
-                throw new Exception("An error occured while generating matrix");
+                MessageBox.Show("An error occured while generating matrix"); return;
             }
-
         }
-
         private void GenerateRandomMatrix(Grid matrixGrid)
         {
             Random random = new Random();
@@ -141,7 +137,6 @@ namespace Course_work
                 }
             }
         }
-
         private void GenerateSymmetricMatrix(Grid matrixGrid)
         {
             Random random = new Random();
@@ -162,12 +157,10 @@ namespace Course_work
                 }
             }
         }
-
         private TextBox GetTextBoxAtGridPosition(int row, int column, Grid matrixGrid)
         {
             return matrixGrid.Children.OfType<TextBox>().FirstOrDefault(tb => Grid.GetRow(tb) == row && Grid.GetColumn(tb) == GetTextBoxColumn(column));
         }
-
         private int GetTextBoxColumn(int column) => column * 2 + 1; 
         public bool ValidateMatrixData(Grid matrixGrid)
         {
@@ -175,9 +168,8 @@ namespace Course_work
             {
                 if (element is TextBox)
                 {
-                    TextBox currentTextBox = element as TextBox;
-                    string input = currentTextBox.Text.Trim();
-                    if (string.IsNullOrEmpty(input) || !IsValidDouble(input))
+                    TextBox? currentTextBox = element as TextBox;
+                    if (currentTextBox == null || string.IsNullOrEmpty(currentTextBox.Text) || !IsValidDouble(currentTextBox.Text))
                     {
                         return false;
                     }
@@ -185,8 +177,18 @@ namespace Course_work
             }
             return true;
         }
-        private bool IsValidDouble(string input, double min = -10000.0, double max = -10000.0, int decimalPart = 5)
+        private bool IsValidDouble(string input, double min = -10000.0, double max = 10000.0, int decimalPart = 5)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                MessageBox.Show("Please enter a valid real number.");
+                return false;
+            }
+            if (input.Contains(' '))
+            {
+                MessageBox.Show("Enter a real number without spaces");
+                return false;
+            }
             if (double.TryParse(input, out double value))
             {
                 if (double.IsInfinity(value))
@@ -212,7 +214,7 @@ namespace Course_work
             }
             else
             {
-                MessageBox.Show("Enter a real number");
+                MessageBox.Show("Please enter a valid real number.");
                 return false;
             }
         }
@@ -220,10 +222,9 @@ namespace Course_work
         {
             textBox.LostFocus += (sender, e) =>
             {
-                string input = textBox.Text;
-                if (!input.Contains(" ") && IsValidDouble(input))
+                if (IsValidDouble(textBox.Text))
                 {
-                    Matrix.MatrixData[rowIndex][columnIndex] = double.Parse(input);
+                    Matrix.MatrixData[rowIndex][columnIndex] = double.Parse(textBox.Text);
                     textBox.BorderBrush = SystemColors.ControlDarkBrush;
                 }
                 else

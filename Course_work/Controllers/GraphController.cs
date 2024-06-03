@@ -1,4 +1,5 @@
 ﻿using OxyPlot;
+using System.Windows;
 namespace Course_work
 {
 
@@ -11,7 +12,7 @@ namespace Course_work
             _graph = new Graph(polynomialCoefficients, minX, maxX, roots);
         }
 
-        public PlotModel BuildGraph()
+        public PlotModel? BuildGraph()
         {
             try
             {
@@ -19,7 +20,7 @@ namespace Course_work
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while building graph: {ex.Message}");
+                MessageBox.Show($"An error occurred while building graph: {ex.Message}"); return null;
             }
         }
     }

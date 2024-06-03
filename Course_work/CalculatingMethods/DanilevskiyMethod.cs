@@ -63,7 +63,6 @@ namespace Course_work
             }
             return (A, arrayB);
         }
-
         private void SwapColumnsAndRows(Matrix matrix, int col1, int col2)
         {
             int size = matrix.MatrixData.Count;
@@ -78,7 +77,7 @@ namespace Course_work
             matrix.MatrixData[col1] = matrix.MatrixData[col2];
             matrix.MatrixData[col2] = tempRow;
         }
-        public (List<double>, List<Matrix>, double[]) GetEigenValues()
+        public (List<double>, List<Matrix>?, double[]?) GetEigenValues()
         {
             if (Matrix.IsDiagonal())
             {
@@ -102,7 +101,7 @@ namespace Course_work
                 Matrix.Iterations++;
                 if (root.Imaginary == 0)
                 {
-                    if (root.Real == 0 || Math.Abs(root.Real) > 1e10)
+                    if (root.Real == 0 || Math.Abs(root.Real) > 1e25)
                     {
                         throw new OverflowException("An overflow occurred when calculating roots.");
                     }
@@ -116,19 +115,24 @@ namespace Course_work
             Array.Reverse(coefficients);
             return (eigenValues, arrayB, coefficients);
         }
-
-        public List<List<double>> GetEigenVectors(List<double> ownValues, List<Matrix> similarityMatrices)
+        public List<List<double>> GetEigenVectors(List<double> eigenValues, List<Matrix> similarityMatrices)
         {
             if (Matrix.IsDiagonal())
             {
-                return (Matrix.GetTransposedMatrix());
+                var eigenVectors = Matrix.GetTransposedMatrix();
+                for(int i = 0; i < eigenValues.Count; i++)
+                {
+                    if (eigenVectors[i][i] == 0)
+                        eigenVectors[i][i] = 1;
+                }
+                return eigenVectors;
             }
             Matrix similarityMatrix = similarityMatrices[0];
             for (int i = 1; i < similarityMatrices.Count; i++)
             {
                 similarityMatrix = similarityMatrix.Multiply(similarityMatrices[i], ref Matrix.RefIterations);
             }
-            Matrix ownVectors = new Matrix(Enumerable.Range(0, Matrix.MatrixData.Count).Select(k => ownValues.Select(val => Math.Pow(val, Matrix.MatrixData.Count - k - 1)).ToList()).ToList());
+            Matrix ownVectors = new Matrix(Enumerable.Range(0, Matrix.MatrixData.Count).Select(k => eigenValues.Select(val => Math.Pow(val, Matrix.MatrixData.Count - k - 1)).ToList()).ToList());
             List<List<double>> transposedVectors = ownVectors.GetTransposedMatrix();
 
             for (int i = 0; i < transposedVectors.Count; i++)

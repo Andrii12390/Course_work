@@ -8,17 +8,16 @@ namespace Course_work
     public partial class MainWindow : Window
     {
         private MatrixController _matrixController;
-        private GraphController _graphController;
+        private GraphController? _graphController;
         private FileController _fileController = new FileController();
         private List<EigenPair> _eigenPairs;
         public MainWindow()
         {
             InitializeComponent();
         }
-
         private void OnMatrixSizeComboBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
+            ComboBox? comboBox = sender as ComboBox;
             if (comboBox?.SelectedItem is ComboBoxItem selectedItem)
             {
                 if (int.TryParse(selectedItem.Content.ToString(), out int size))
@@ -57,8 +56,7 @@ namespace Course_work
                                                           _matrixController.EigenValues.Max(), _matrixController.EigenValues.ToArray());
                         break;
                     case Method.Rotation:
-                        double tolerance = double.Parse((SelectedTolerance.SelectedItem as ComboBoxItem)?.Content.ToString());
-                        _matrixController?.CalculateRotation(tolerance);
+                        _matrixController?.CalculateRotation(double.Parse((SelectedTolerance.SelectedItem as ComboBoxItem)?.Content.ToString()));
                         break;
                     default:
                         break;
@@ -78,7 +76,6 @@ namespace Course_work
             _fileController.EigenPairs = _eigenPairs;
             _fileController.Matrix = _matrixController.Matrix.MatrixData;
         }
-
         private void OnClearButtonClick(object sender, RoutedEventArgs e)
         {
             _matrixController.Matrix = new Matrix(_matrixController.Matrix.MatrixData.Count);
@@ -86,22 +83,13 @@ namespace Course_work
             plotView.Visibility = Visibility.Collapsed;
             EigenDataGrid.ItemsSource = null;
         }
-
         private void OnSaveButtonClick(object sender, RoutedEventArgs e)
         {
-            string selectedFilePath = SelectedFile.Text;
-            _fileController.SaveToFile(selectedFilePath);
+            _fileController.SaveToFile(SelectedFile.Text);
         }
         private void OnGenerateMatrixButtonClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                _matrixController.GenerateRandomMatrix(MatrixGrid, SelectedMethod.SelectedIndex == 0 ? Method.Rotation : Method.Danilevskiy);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            _matrixController.GenerateRandomMatrix(MatrixGrid, SelectedMethod.SelectedIndex == 0 ? Method.Rotation : Method.Danilevskiy);
         }
         private void OnShowComplexityButtonClick(object sender, RoutedEventArgs e)
         {
@@ -117,16 +105,8 @@ namespace Course_work
         }
         private void OnBuildGraphButtonClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                plotView.Visibility = Visibility.Visible;
-                plotView.Model = _graphController?.BuildGraph();
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            plotView.Visibility = Visibility.Visible;
+            plotView.Model = _graphController?.BuildGraph();
         }
     }
 }

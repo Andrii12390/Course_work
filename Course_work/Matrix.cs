@@ -2,7 +2,7 @@
 {
     internal class Matrix
     {
-        private List<List<double>> _matrix;
+        private List<List<double>>? _matrix;
         private int _iterations;
 
 
@@ -99,7 +99,6 @@
             }
             return transposedMatrix;
         }
-
         public Matrix Multiply(Matrix matrixB, ref int iterations)
         {
             List<List<double>> resultMatrix = GetEmptyMatrix(matrixB.MatrixData.Count);
