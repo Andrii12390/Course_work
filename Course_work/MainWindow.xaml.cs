@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -98,10 +99,18 @@ namespace Course_work
         }
         private void OnSelectFileButtonClick(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog { Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*" };
-            if (saveFileDialog.ShowDialog() == true)
+            OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*" };
+            if (openFileDialog.ShowDialog() == true)
             {
-                SelectedFile.Text = saveFileDialog.FileName;
+                string filePath = openFileDialog.FileName;
+                if ((File.GetAttributes(filePath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    MessageBox.Show("The selected file is read-only, please select another");
+                }
+                else
+                {
+                    SelectedFile.Text = filePath;
+                }
             }
         }
         private void OnBuildGraphButtonClick(object sender, RoutedEventArgs e)

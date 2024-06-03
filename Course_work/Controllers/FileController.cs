@@ -11,27 +11,35 @@ namespace Course_work
         public List<EigenPair> EigenPairs { get => _eigenPairs; set => _eigenPairs = value; }
         public void SaveToFile(string filePath)
         {
-            if (!string.IsNullOrEmpty(filePath) && EigenPairs != null && EigenPairs.Count > 0 && filePath != "__________")
+            try
             {
-                using (StreamWriter writer = new StreamWriter(filePath, true))
+                if (!string.IsNullOrEmpty(filePath) && EigenPairs != null && EigenPairs.Count > 0 && filePath != "__________")
                 {
-                    writer.WriteLine("Matrix");
-                    foreach (List<double> row in Matrix)
+                    using (StreamWriter writer = new StreamWriter(filePath, true))
                     {
-                        writer.WriteLine(String.Join(" ", row));
+                        writer.WriteLine("Matrix");
+                        foreach (List<double> row in Matrix)
+                        {
+                            writer.WriteLine(String.Join(" ", row));
+                        }
+                        foreach (EigenPair pair in EigenPairs)
+                        {
+                            writer.WriteLine($"Eigen value: {pair.EigenValue} | Eigen vector: [{pair.EigenVectorString}]");
+                        }
+                        writer.WriteLine(new string('-', 90));
                     }
-                    foreach (EigenPair pair in EigenPairs)
-                    {
-                        writer.WriteLine($"Eigen value: {pair.EigenValue} | Eigen vector: [{pair.EigenVectorString}]");
-                    }
-                    writer.WriteLine(new string('-', 90));
+                    MessageBox.Show("Data saved successfully.");
                 }
-                MessageBox.Show("Data saved successfully.");
+                else
+                {
+                    MessageBox.Show("No data to save or you didn't select file path.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("No data to save or you didn't select file path.");
+                MessageBox.Show($"An error occured while save data to file: {ex.Message}");
             }
+            
         }
     }
 }

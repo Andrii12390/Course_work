@@ -1,6 +1,8 @@
 ﻿using System.Numerics;
+using System.Windows;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 namespace Course_work
 {
     internal class DanilevskiyMethod
@@ -39,7 +41,7 @@ namespace Course_work
 
             for (int col = 0; col < size; col++)
             {
-                B[row - 1][col] = (row - 1 == col) ? 1.0 / matrixA[row][row - 1] : -matrixA[row][col] / matrixA[row][row - 1];
+                B[row - 1][col] = (row - 1 == col) ? 1.0D / matrixA[row][row - 1] : -matrixA[row][col] / matrixA[row][row - 1];
             }
 
             return B;
@@ -57,6 +59,13 @@ namespace Course_work
                     SwapColumnsAndRows(A, i, i - 1);
                 }
                 var B = new Matrix(GetB(A.MatrixData, i));
+                DenseMatrix denseB = DenseMatrix.OfColumnArrays(B.MatrixData.Select(row => row.ToArray()).ToArray());
+                double detB = denseB.Determinant();
+                if (Math.Abs(detB) < 1e-25)
+                {
+                    MessageBox.Show("aasd");
+                    
+                }
                 arrayB.Add(B);
                 var BInverse = new Matrix(FindInverseMatrix(B.MatrixData));
                 A = BInverse.Multiply(A, ref Matrix.RefIterations).Multiply(B, ref Matrix.RefIterations);
@@ -101,7 +110,7 @@ namespace Course_work
                 Matrix.Iterations++;
                 if (root.Imaginary == 0)
                 {
-                    if (root.Real == 0 || Math.Abs(root.Real) > 1e25)
+                    if (Math.Abs(root.Real) == 0|| Math.Abs(root.Real) > 1e25)
                     {
                         throw new OverflowException("An overflow occurred when calculating roots.");
                     }
