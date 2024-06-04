@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 public enum Method
@@ -149,7 +150,7 @@ namespace Course_work
                     Matrix.MatrixData[j][i] = value;
                     TextBox textBox1 = GetTextBoxAtGridPosition(i, j, matrixGrid);
                     if (textBox1 != null) textBox1.Text = $"{value:F2}";
-                    if (i != j) 
+                    if (i != j)
                     {
                         TextBox textBox2 = GetTextBoxAtGridPosition(j, i, matrixGrid);
                         if (textBox2 != null) textBox2.Text = $"{value:F2}";
@@ -161,7 +162,7 @@ namespace Course_work
         {
             return matrixGrid.Children.OfType<TextBox>().FirstOrDefault(tb => Grid.GetRow(tb) == row && Grid.GetColumn(tb) == GetTextBoxColumn(column));
         }
-        private int GetTextBoxColumn(int column) => column * 2 + 1; 
+        private int GetTextBoxColumn(int column) => column * 2 + 1;
         public bool ValidateMatrixData(Grid matrixGrid)
         {
             foreach (UIElement element in matrixGrid.Children)
@@ -245,5 +246,7 @@ namespace Course_work
                 }
             }
         }
+
     }
 }
+

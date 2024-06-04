@@ -48,8 +48,8 @@ namespace Course_work
         }
         public (Matrix, List<Matrix>) GetNormalForm()
         {
-            var A = new Matrix(Matrix.MatrixData);
-            var arrayB = new List<Matrix>();
+            Matrix A = new Matrix(Matrix.MatrixData);
+            List<Matrix> arrayB = new List<Matrix>();
             int size = A.MatrixData.Count;
 
             for (int i = size - 1; i > 0; i--)
@@ -58,36 +58,34 @@ namespace Course_work
                 {
                     SwapColumnsAndRows(A, i, i - 1);
                 }
-                var B = new Matrix(GetB(A.MatrixData, i));
-                DenseMatrix denseB = DenseMatrix.OfColumnArrays(B.MatrixData.Select(row => row.ToArray()).ToArray());
-                double detB = denseB.Determinant();
-                if (Math.Abs(detB) < 1e-25)
-                {
-                    MessageBox.Show("aasd");
-                    
-                }
+                Matrix B = new Matrix(GetB(A.MatrixData, i));
+                ChechDeterminant(B.MatrixData);
                 arrayB.Add(B);
-                var BInverse = new Matrix(FindInverseMatrix(B.MatrixData));
+                Matrix BInverse = new Matrix(FindInverseMatrix(B.MatrixData));
                 A = BInverse.Multiply(A, ref Matrix.RefIterations).Multiply(B, ref Matrix.RefIterations);
             }
             return (A, arrayB);
         }
+        private void ChechDeterminant(List<List<double>> matrix)
+        {
+            DenseMatrix dense = DenseMatrix.OfColumnArrays(matrix.Select(row => row.ToArray()).ToArray());
+            double determinant = dense.Determinant();
+            if (Math.Abs(determinant) < 1e-30 || determinant == 0)
+            {
+                throw new ArgumentException("Determinant of the matrix is ​​zero, program cannot continue the calculation");
+            }
+        }
         private void SwapColumnsAndRows(Matrix matrix, int col1, int col2)
         {
-            int size = matrix.MatrixData.Count;
-            for (int j = 0; j < size; j++)
+            for (int j = 0; j < matrix.MatrixData.Count; j++)
             {
-                double temp = matrix.MatrixData[j][col1];
-                matrix.MatrixData[j][col1] = matrix.MatrixData[j][col2];
-                matrix.MatrixData[j][col2] = temp;
+                (matrix.MatrixData[j][col1], matrix.MatrixData[j][col2]) = (matrix.MatrixData[j][col2], matrix.MatrixData[j][col1]);
             }
-
-            List<double> tempRow = matrix.MatrixData[col1];
-            matrix.MatrixData[col1] = matrix.MatrixData[col2];
-            matrix.MatrixData[col2] = tempRow;
+            (matrix.MatrixData[col1], matrix.MatrixData[col2]) = (matrix.MatrixData[col2], matrix.MatrixData[col1]);
         }
         public (List<double>, List<Matrix>?, double[]?) GetEigenValues()
         {
+            ChechDeterminant(Matrix.MatrixData);
             if (Matrix.IsDiagonal())
             {
                 return (Matrix.MatrixData.Select((row, index) => row[index]).ToList(), null, null);
@@ -110,7 +108,7 @@ namespace Course_work
                 Matrix.Iterations++;
                 if (root.Imaginary == 0)
                 {
-                    if (Math.Abs(root.Real) == 0|| Math.Abs(root.Real) > 1e25)
+                    if (Double.IsInfinity(poly.Evaluate(root.Real)) || Math.Abs(root.Real) > 1e25 || (root.Real == 0 && coefficients[0] != 0))
                     {
                         throw new OverflowException("An overflow occurred when calculating roots.");
                     }
@@ -128,7 +126,7 @@ namespace Course_work
         {
             if (Matrix.IsDiagonal())
             {
-                var eigenVectors = Matrix.GetTransposedMatrix();
+                var eigenVectors = Matrix.GetTransposedMatrix(ref Matrix.RefIterations);
                 for(int i = 0; i < eigenValues.Count; i++)
                 {
                     if (eigenVectors[i][i] == 0)
@@ -142,11 +140,11 @@ namespace Course_work
                 similarityMatrix = similarityMatrix.Multiply(similarityMatrices[i], ref Matrix.RefIterations);
             }
             Matrix ownVectors = new Matrix(Enumerable.Range(0, Matrix.MatrixData.Count).Select(k => eigenValues.Select(val => Math.Pow(val, Matrix.MatrixData.Count - k - 1)).ToList()).ToList());
-            List<List<double>> transposedVectors = ownVectors.GetTransposedMatrix();
+            List<List<double>> transposedVectors = ownVectors.GetTransposedMatrix(ref Matrix.RefIterations);
 
             for (int i = 0; i < transposedVectors.Count; i++)
             {
-                transposedVectors[i] = similarityMatrix * transposedVectors[i];
+                transposedVectors[i] = similarityMatrix.MultiplyByVector(transposedVectors[i], ref Matrix.RefIterations);
             }
             return transposedVectors;
         }

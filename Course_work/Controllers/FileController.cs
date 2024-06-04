@@ -39,7 +39,6 @@ namespace Course_work
             {
                 MessageBox.Show($"An error occured while save data to file: {ex.Message}");
             }
-            
         }
     }
 }

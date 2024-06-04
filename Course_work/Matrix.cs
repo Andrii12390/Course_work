@@ -39,7 +39,6 @@
                 for (int j = 0; j < cols; j++)
                 {
                     row.Add(0);
-                    Iterations++;
                 }
                 emptyMatrix.Add(row);
             }
@@ -51,7 +50,6 @@
             for (int i = 0; i < MatrixData[0].Count; i++)
             {
                 unitMatrix[i][i] = 1;
-                Iterations++;
             }
             return unitMatrix;
         }
@@ -77,7 +75,6 @@
             {
                 for (int j = 0; j < MatrixData[0].Count; j++)
                 {
-                    Iterations++;
                     if (i != j && MatrixData[i][j] == 0)
                     {
                         num++;
@@ -86,14 +83,14 @@
             }
             return num == MatrixData[0].Count * MatrixData[0].Count - MatrixData[0].Count;
         }
-        public List<List<double>> GetTransposedMatrix()
+        public List<List<double>> GetTransposedMatrix(ref int iterations)
         {
             List<List<double>> transposedMatrix = GetEmptyMatrix(MatrixData[0].Count, MatrixData.Count);
             for (int i = 0; i < MatrixData.Count; i++)
             {
                 for (int j = 0; j < MatrixData[i].Count; j++)
                 {
-                    Iterations++;
+                    iterations++;
                     transposedMatrix[j][i] = MatrixData[i][j];
                 }
             }
@@ -102,7 +99,6 @@
         public Matrix Multiply(Matrix matrixB, ref int iterations)
         {
             List<List<double>> resultMatrix = GetEmptyMatrix(matrixB.MatrixData.Count);
-
             for (int i = 0; i < matrixB.MatrixData.Count; i++)
             {
                 for (int j = 0; j < matrixB.MatrixData.Count; j++)
@@ -116,22 +112,19 @@
             }
             return new Matrix(resultMatrix);
         }
-        public static List<double> operator *(Matrix matrix, List<double> vector)
+        public List<double> MultiplyByVector(List<double> vector, ref int iterations)
         {
-            int size = matrix.MatrixData.Count;
-            List<double> resultVector = new List<double>(new double[size]);
-
-            for (int i = 0; i < size; i++)
+            List<double> resultVector = new List<double>(new double[MatrixData.Count]);
+            for (int i = 0; i < MatrixData.Count; i++)
             {
                 double sum = 0;
-                for (int j = 0; j < matrix.MatrixData[0].Count; j++)
+                for (int j = 0; j < MatrixData[0].Count; j++)
                 {
-                    sum += matrix.MatrixData[i][j] * vector[j];
-                    matrix.Iterations++;
+                    sum += MatrixData[i][j] * vector[j];
+                    iterations++;
                 }
                 resultVector[i] = sum;
             }
-
             return resultVector;
         }
     }

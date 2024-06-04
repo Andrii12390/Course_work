@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="alglib.net" Version="3.19.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Meta.Numerics" Version="4.1.4" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
   </ItemGroup>
 

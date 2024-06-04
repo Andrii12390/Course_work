@@ -90,12 +90,8 @@ namespace Course_work
                     MarkerFill = OxyColors.Red,
                     MarkerSize = 3
                 };
-                intersectionPoint.Points.Add(new ScatterPoint(root, 0));
-                LineSeries intersectionLine = new LineSeries
-                {
-                    Color = OxyColors.Blue,
-                    StrokeThickness = 1
-                };
+                intersectionPoint.Points.Add(new ScatterPoint(root, 0.0D));
+                LineSeries intersectionLine = new LineSeries { Color = OxyColors.Blue, };
                 intersectionLine.Points.Add(new DataPoint(root - epsilon, yLeft));
                 intersectionLine.Points.Add(new DataPoint(root, 0.0D));
                 intersectionLine.Points.Add(new DataPoint(root + epsilon, yRight));

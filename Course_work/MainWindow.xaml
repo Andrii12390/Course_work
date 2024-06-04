@@ -252,7 +252,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Matrix size" Grid.Row="0" Margin="3"  FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
-                <ComboBox Grid.Row="0" Background="Blue" SelectedIndex="0" Style="{StaticResource CustomComboBoxStyle}" FontSize="20" SelectionChanged="OnMatrixSizeComboBoxSelectionChanged" HorizontalContentAlignment="Center" Margin="3, 35, 3, 5">
+                <ComboBox Grid.Row="0" x:Name="SelectedSize" Background="Blue" SelectedIndex="0" Style="{StaticResource CustomComboBoxStyle}" FontSize="20" SelectionChanged="OnMatrixSizeComboBoxSelectionChanged" HorizontalContentAlignment="Center" Margin="3, 35, 3, 5">
                     <ComboBoxItem Content="2"></ComboBoxItem>
                     <ComboBoxItem Content="3"></ComboBoxItem>
                     <ComboBoxItem Content="4"></ComboBoxItem>

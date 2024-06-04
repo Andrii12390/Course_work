@@ -73,20 +73,18 @@
             {
                 return (ExtractEigenvalues(Matrix.MatrixData, epsilon), null);
             }
-            int iterations = 0;
+            int iterations = 0, maxIterations = 1000;
             bool operationCondition = true;
             List<Matrix> rotationMatrices = new List<Matrix>();
             Matrix currentMatrix = new Matrix(Matrix.MatrixData);
-            while (iterations < 1e4 && operationCondition)
+            while (iterations < maxIterations && operationCondition)
             {
                 (int i, int j) = GetLargestNonDiagonalElement(currentMatrix.MatrixData);
-                double angle = GetRotationAngle(currentMatrix.MatrixData, i, j);
-                Matrix rotationMatrix = new Matrix(GetRotationMatrix(currentMatrix.MatrixData[0].Count, i, j, angle));
+                Matrix rotationMatrix = new Matrix(GetRotationMatrix(currentMatrix.MatrixData[0].Count, i, j, GetRotationAngle(currentMatrix.MatrixData, i, j)));
                 rotationMatrices.Add(rotationMatrix);
-                Matrix transposedMatrix = new Matrix(rotationMatrix.GetTransposedMatrix());
+                Matrix transposedMatrix = new Matrix(rotationMatrix.GetTransposedMatrix(ref Matrix.RefIterations));
                 currentMatrix = (transposedMatrix.Multiply(currentMatrix, ref Matrix.RefIterations)).Multiply(rotationMatrix, ref Matrix.RefIterations);
-                double sumOfSquares = SumOfSquaresOfNotDiagonalElements(currentMatrix.MatrixData);
-                if (sumOfSquares < epsilon)
+                if (SumOfSquaresOfNotDiagonalElements(currentMatrix.MatrixData) < epsilon)
                 {
                     operationCondition = false;
                 }
@@ -123,7 +121,7 @@
         {
             if(Matrix.IsDiagonal())
             {
-                var Vectors = ExtractEigenVectors(Matrix.GetTransposedMatrix(), epsilon);
+                var Vectors = ExtractEigenVectors(Matrix.GetTransposedMatrix(ref Matrix.RefIterations), epsilon);
                 for (int i = 0;i < Vectors.Count;i++)
                 {
                     if (Vectors[i][i] == 0)
@@ -139,7 +137,7 @@
             }
             Matrix eigenVectors = new Matrix(Matrix.GetEmptyMatrix(Matrix.MatrixData[0].Count));
             eigenVectors.MatrixData = ExtractEigenVectors(resultMatrix.MatrixData, epsilon);
-            eigenVectors.MatrixData = eigenVectors.GetTransposedMatrix();
+            eigenVectors.MatrixData = eigenVectors.GetTransposedMatrix(ref Matrix.RefIterations);
             return eigenVectors.MatrixData;
         }
     }
