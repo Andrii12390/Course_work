@@ -11,7 +11,7 @@ namespace Course_work
 
 
         public Matrix Matrix { get => _matrix; set => _matrix = value; }
-
+        private int index1 = 0, index2 = 0;
 
         public DanilevskiyMethod(Matrix matrix)
         {
@@ -41,7 +41,7 @@ namespace Course_work
 
             for (int col = 0; col < size; col++)
             {
-                B[row - 1][col] = (row - 1 == col) ? 1.0D / matrixA[row][row - 1] : -matrixA[row][col] / matrixA[row][row - 1];
+                B[row - 1][col] = (row - 1 == col) ? 1.0 / matrixA[row][row - 1] : -matrixA[row][col] / matrixA[row][row - 1];
             }
 
             return B;
@@ -56,7 +56,9 @@ namespace Course_work
             {
                 if (A.MatrixData[i][i - 1] == 0)
                 {
-                    SwapColumnsAndRows(A, i, i - 1);
+                    A.MatrixData = SwapColumnsAndRows(A, i-1, i-2);
+                    index1 = i - 1;
+                    index2 = i - 2;
                 }
                 Matrix B = new Matrix(GetB(A.MatrixData, i));
                 ChechDeterminant(B.MatrixData);
@@ -75,13 +77,21 @@ namespace Course_work
                 throw new ArgumentException("Determinant of the matrix is ​​zero, program cannot continue the calculation");
             }
         }
-        private void SwapColumnsAndRows(Matrix matrix, int col1, int col2)
+        private List<List<double>> SwapColumnsAndRows(Matrix matrix, int col1, int col2)
         {
+            for (int i = 0; i < matrix.MatrixData.Count; i++)
+            {
+                double temp = matrix.MatrixData[i][col1];
+                matrix.MatrixData[i][col1] = matrix.MatrixData[i][col2];
+                matrix.MatrixData[i][col2] = temp;
+            }
             for (int j = 0; j < matrix.MatrixData.Count; j++)
             {
-                (matrix.MatrixData[j][col1], matrix.MatrixData[j][col2]) = (matrix.MatrixData[j][col2], matrix.MatrixData[j][col1]);
+                double temp = matrix.MatrixData[col1][j];
+                matrix.MatrixData[col1][j] = matrix.MatrixData[col2][j];
+                matrix.MatrixData[col2][j] = temp;
             }
-            (matrix.MatrixData[col1], matrix.MatrixData[col2]) = (matrix.MatrixData[col2], matrix.MatrixData[col1]);
+            return matrix.MatrixData;
         }
         public (List<double>, List<Matrix>?, double[]?) GetEigenValues()
         {
@@ -145,6 +155,13 @@ namespace Course_work
             for (int i = 0; i < transposedVectors.Count; i++)
             {
                 transposedVectors[i] = similarityMatrix.MultiplyByVector(transposedVectors[i], ref Matrix.RefIterations);
+            }
+            if(index1 != 0 && index2 != 0)
+            {
+                for (int i = 0; i < transposedVectors.Count; i++)
+                {
+                    (transposedVectors[i][index1], transposedVectors[i][index2]) = (transposedVectors[i][index2],transposedVectors[i][index1]); 
+                }
             }
             return transposedVectors;
         }
